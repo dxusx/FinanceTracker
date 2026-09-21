@@ -1,0 +1,64 @@
+@model RegisterViewModel
+@{
+    ViewData["Title"] = "Регистрация";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <div class="text-center mb-4">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-circle mb-3" style="width: 50px; height: 50px;">
+                        <i class="bi bi-person-plus fs-3"></i>
+                    </div>
+                    <h4 class="fw-bold">Регистрация</h4>
+                </div>
+
+                <form asp-action="Register" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="FullName" class="form-label small fw-semibold"></label>
+                        <input asp-for="FullName" class="form-control" placeholder="Иван Иванов" />
+                        <span asp-validation-for="FullName" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label small fw-semibold"></label>
+                        <input asp-for="Email" class="form-control" placeholder="name@example.com" />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label small fw-semibold"></label>
+                        <input asp-for="Password" class="form-control" placeholder="Минимум 6 символов" />
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="ConfirmPassword" class="form-label small fw-semibold"></label>
+                        <input asp-for="ConfirmPassword" class="form-control" placeholder="Повторите пароль" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
+                        Зарегистрироваться
+                    </button>
+                </form>
+
+                <div class="text-center mt-4 pt-3 border-top">
+                    <p class="small text-muted mb-0">
+                        Уже есть учетная запись? 
+                        <a asp-action="Login" class="text-decoration-none">Войти</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
