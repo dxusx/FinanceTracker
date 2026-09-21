@@ -1,0 +1,105 @@
+@model CategoryViewModel
+@{
+    ViewData["Title"] = "Редактирование категории";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-transparent py-3">
+                <h5 class="card-title fw-bold mb-0">
+                    <i class="bi bi-pencil-square text-primary me-2"></i>Редактирование категории
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Id" />
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Тип</label>
+                        <div class="btn-group w-100" role="group">
+                            <input type="radio" class="btn-check" asp-for="Type" value="Expense" id="catTypeExp">
+                            <label class="btn btn-outline-danger" for="catTypeExp">
+                                <i class="bi bi-dash-circle me-1"></i> Расход
+                            </label>
+
+                            <input type="radio" class="btn-check" asp-for="Type" value="Income" id="catTypeInc">
+                            <label class="btn btn-outline-success" for="catTypeInc">
+                                <i class="bi bi-plus-circle me-1"></i> Доход
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label small fw-semibold"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ColorHex" class="form-label small fw-semibold"></label>
+                        <div class="d-flex align-items-center gap-2">
+                            <input asp-for="ColorHex" type="color" class="form-control form-control-color" id="colorPicker" title="Цвет">
+                            <input asp-for="ColorHex" type="text" class="form-control" id="colorText">
+                        </div>
+                        <span asp-validation-for="ColorHex" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Icon" class="form-label small fw-semibold"></label>
+                        <div class="input-group mb-2">
+                            <span class="input-group-text bg-light" id="iconPreviewContainer">
+                                <i class="bi @Model.Icon fs-5" id="iconPreview"></i>
+                            </span>
+                            <input asp-for="Icon" class="form-control" id="iconInput" />
+                        </div>
+                        <span asp-validation-for="Icon" class="text-danger small"></span>
+
+                        <div class="d-flex flex-wrap gap-1">
+                            @foreach (var ic in new[] { "bi-cart3", "bi-cup-hot", "bi-car-front", "bi-house-door", "bi-cash-coin", "bi-laptop", "bi-gift", "bi-bag", "bi-heart-pulse", "bi-controller", "bi-book", "bi-phone", "bi-airplane", "bi-piggy-bank" })
+                            {
+                                <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2" onclick="selectIcon('@ic')">
+                                    <i class="bi @ic"></i>
+                                </button>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            Отмена
+                        </a>
+                        <button type="submit" class="btn btn-primary px-4 fw-semibold">
+                            Сохранить
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        const colorPicker = document.getElementById('colorPicker');
+        const colorText = document.getElementById('colorText');
+        const iconInput = document.getElementById('iconInput');
+        const iconPreview = document.getElementById('iconPreview');
+
+        colorPicker.addEventListener('input', (e) => colorText.value = e.target.value);
+        colorText.addEventListener('input', (e) => colorPicker.value = e.target.value);
+
+        iconInput.addEventListener('input', (e) => {
+            iconPreview.className = 'bi ' + e.target.value + ' fs-5';
+        });
+
+        function selectIcon(iconName) {
+            iconInput.value = iconName;
+            iconPreview.className = 'bi ' + iconName + ' fs-5';
+        }
+    </script>
+}
