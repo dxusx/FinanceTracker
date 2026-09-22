@@ -1,0 +1,55 @@
+@model BudgetViewModel
+@{
+    ViewData["Title"] = "Изменение лимита бюджета";
+    var monthNames = new[] { "", "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь" };
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-transparent py-3">
+                <h5 class="card-title fw-bold mb-0">
+                    <i class="bi bi-pencil-square text-primary me-2"></i>Изменение лимита бюджета
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="CategoryId" />
+                    <input type="hidden" asp-for="Month" />
+                    <input type="hidden" asp-for="Year" />
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                    <div class="alert alert-light border small mb-3">
+                        Период: <strong>@monthNames[Model.Month] @Model.Year</strong><br />
+                        Категория: <strong>@(Model.CategoryOptions.FirstOrDefault()?.Text ?? "Категория")</strong>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="MonthlyLimit" class="form-label small fw-semibold"></label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light fw-bold">₽</span>
+                            <input asp-for="MonthlyLimit" class="form-control form-control-lg fw-bold" type="number" step="0.01" min="0.01" />
+                        </div>
+                        <span asp-validation-for="MonthlyLimit" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" asp-route-month="@Model.Month" asp-route-year="@Model.Year" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-1"></i> Отмена
+                        </a>
+                        <button type="submit" class="btn btn-primary px-4 fw-semibold">
+                            <i class="bi bi-check-lg me-1"></i> Сохранить изменения
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

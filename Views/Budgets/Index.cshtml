@@ -1,0 +1,148 @@
+@model BudgetListViewModel
+@{
+    ViewData["Title"] = "Бюджеты";
+    var monthNames = new[] { "", "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь" };
+    var currentMonthName = monthNames[Model.Month];
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+    <div>
+        <h2 class="h4 fw-bold mb-1">
+            <i class="bi bi-bullseye text-primary me-2"></i>Бюджеты
+        </h2>
+        <div class="text-muted small">Лимиты расходов по категориям</div>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <form method="get" asp-action="Index" class="d-flex gap-2 align-items-center">
+            <select name="month" class="form-select form-select-sm" onchange="this.form.submit()">
+                @for (int m = 1; m <= 12; m++)
+                {
+                    <option value="@m" selected="@(m == Model.Month)">@monthNames[m]</option>
+                }
+            </select>
+            <select name="year" class="form-select form-select-sm" onchange="this.form.submit()">
+                @for (int y = DateTime.Today.Year - 1; y <= DateTime.Today.Year + 1; y++)
+                {
+                    <option value="@y" selected="@(y == Model.Year)">@y</option>
+                }
+            </select>
+        </form>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i> Добавить лимит
+        </a>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card shadow-sm p-3">
+            <div class="text-muted small fw-semibold text-uppercase">Запланировано</div>
+            <div class="fs-4 fw-bold text-primary mt-1">@Model.TotalBudget.ToString("N2") @Model.CurrencySymbol</div>
+            <div class="small text-muted mt-1">на @currentMonthName @Model.Year</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm p-3">
+            <div class="text-muted small fw-semibold text-uppercase">Потрачено</div>
+            <div class="fs-4 fw-bold text-danger mt-1">@Model.TotalSpent.ToString("N2") @Model.CurrencySymbol</div>
+            <div class="small text-muted mt-1">по бюджетам</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm p-3">
+            <div class="text-muted small fw-semibold text-uppercase">Остаток</div>
+            <div class="fs-4 fw-bold @(Model.TotalRemaining >= 0 ? "text-success" : "text-danger") mt-1">
+                @Model.TotalRemaining.ToString("N2") @Model.CurrencySymbol
+            </div>
+            <div class="small text-muted mt-1">
+                @(Model.TotalRemaining >= 0 ? "В пределах нормы" : "Перерасход")
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.Budgets.Any())
+{
+    <div class="row g-4">
+        @foreach (var b in Model.Budgets)
+        {
+            var progressColor = b.Percentage >= 100 ? "bg-danger" : (b.Percentage >= 80 ? "bg-warning" : "bg-success");
+            <div class="col-md-6 col-lg-4">
+                <div class="card shadow-sm h-100 border-top border-4" style="border-top-color: @b.ColorHex !important;">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="d-flex align-items-center">
+                                <span class="rounded-circle d-inline-flex align-items-center justify-content-center text-white me-2 shadow-sm"
+                                      style="width: 36px; height: 36px; background-color: @b.ColorHex;">
+                                    <i class="bi @b.Icon fs-6"></i>
+                                </span>
+                                <div>
+                                    <h6 class="fw-bold mb-0">@b.CategoryName</h6>
+                                    <span class="text-muted small">Лимит: @b.Limit.ToString("N0") @Model.CurrencySymbol</span>
+                                </div>
+                            </div>
+
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-link text-muted" type="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                    <li>
+                                        <a asp-action="Edit" asp-route-id="@b.BudgetId" class="dropdown-item">
+                                            Редактировать
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form asp-action="Delete" asp-route-id="@b.BudgetId" method="post" onsubmit="return confirm('Удалить этот лимит?');">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="dropdown-item text-danger">
+                                                Удалить
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between small fw-semibold mb-1">
+                            <span>Потрачено: @b.Spent.ToString("N0") @Model.CurrencySymbol</span>
+                            <span class="@(b.IsOverBudget ? "text-danger" : "text-muted")">@b.Percentage%</span>
+                        </div>
+                        <div class="progress mb-2" style="height: 10px;">
+                            <div class="progress-bar @progressColor" role="progressbar" 
+                                 style="width: @Math.Min(b.Percentage, 100)%;" 
+                                 aria-valuenow="@b.Percentage" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+
+                        @if (b.IsOverBudget)
+                        {
+                            <div class="alert alert-danger py-1 px-2 small mb-0 d-flex align-items-center">
+                                <i class="bi bi-exclamation-triangle-fill me-2 fs-6"></i>
+                                <span>Превышение на <strong>@((b.Spent - b.Limit).ToString("N0")) @Model.CurrencySymbol</strong></span>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="text-muted small">
+                                Доступно: <strong class="text-success">@b.Remaining.ToString("N0") @Model.CurrencySymbol</strong>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="card shadow-sm p-5 text-center">
+        <i class="bi bi-bullseye fs-1 text-muted mb-3"></i>
+        <h5>Нет бюджетов на @currentMonthName @Model.Year</h5>
+        <div class="mt-2">
+            <a asp-action="Create" class="btn btn-primary">
+                Добавить лимит
+            </a>
+        </div>
+    </div>
+}
