@@ -1,0 +1,108 @@
+@model TransactionFormViewModel
+@{
+    ViewData["Title"] = "Новая операция";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-7 col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-transparent py-3">
+                <h5 class="card-title fw-bold mb-0">
+                    <i class="bi bi-plus-circle text-primary me-2"></i>Новая операция
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="Create" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                    <div class="mb-4">
+                        <label class="form-label small fw-semibold">Тип</label>
+                        <div class="btn-group w-100" role="group">
+                            <input type="radio" class="btn-check" name="Type" id="typeExpense" value="Expense" 
+                                   autocomplete="off" @(Model.Type == TransactionType.Expense ? "checked" : "") onchange="onTypeChanged('Expense')">
+                            <label class="btn btn-outline-danger py-2" for="typeExpense">
+                                <i class="bi bi-dash-circle me-1"></i> Расход
+                            </label>
+
+                            <input type="radio" class="btn-check" name="Type" id="typeIncome" value="Income" 
+                                   autocomplete="off" @(Model.Type == TransactionType.Income ? "checked" : "") onchange="onTypeChanged('Income')">
+                            <label class="btn btn-outline-success py-2" for="typeIncome">
+                                <i class="bi bi-plus-circle me-1"></i> Доход
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Amount" class="form-label small fw-semibold"></label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light fw-bold">₽</span>
+                            <input asp-for="Amount" class="form-control form-control-lg fw-bold" placeholder="0.00" type="number" step="0.01" min="0.01" />
+                        </div>
+                        <span asp-validation-for="Amount" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label asp-for="CategoryId" class="form-label small fw-semibold mb-0"></label>
+                            <a asp-controller="Categories" asp-action="Create" class="small text-decoration-none">
+                                <i class="bi bi-plus"></i> Новая категория
+                            </a>
+                        </div>
+                        <select asp-for="CategoryId" id="categorySelect" asp-items="Model.CategoryOptions" class="form-select">
+                            <option value="">-- Выберите категорию --</option>
+                        </select>
+                        <span asp-validation-for="CategoryId" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Date" class="form-label small fw-semibold"></label>
+                        <input asp-for="Date" type="date" class="form-control" />
+                        <span asp-validation-for="Date" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Note" class="form-label small fw-semibold"></label>
+                        <textarea asp-for="Note" class="form-control" rows="2" placeholder="Примечание"></textarea>
+                        <span asp-validation-for="Note" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            Назад
+                        </a>
+                        <button type="submit" class="btn btn-primary px-4 fw-semibold">
+                            Сохранить
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        async function onTypeChanged(type) {
+            const select = document.getElementById('categorySelect');
+            select.innerHTML = '<option value="">Загрузка...</option>';
+
+            try {
+                const response = await fetch(`/Transactions/GetCategoriesByType?type=${type}`);
+                const categories = await response.json();
+
+                select.innerHTML = '<option value="">-- Выберите категорию --</option>';
+                categories.forEach(cat => {
+                    const opt = document.createElement('option');
+                    opt.value = cat.value;
+                    opt.textContent = cat.text;
+                    select.appendChild(opt);
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    </script>
+}
