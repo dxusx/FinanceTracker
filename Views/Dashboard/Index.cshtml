@@ -1,0 +1,301 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Дашборд";
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+    <div>
+        <h2 class="h4 fw-bold mb-1">
+            <i class="bi bi-speedometer2 text-primary me-2"></i>Дашборд
+        </h2>
+        <div class="text-muted small">
+            Период: 
+            @if (Model.SelectedPeriod == "all_time")
+            {
+                <span class="fw-semibold">За всё время</span>
+            }
+            else
+            {
+                <span class="fw-semibold">@Model.StartDate.ToString("dd.MM.yyyy") — @Model.EndDate.ToString("dd.MM.yyyy")</span>
+            }
+        </div>
+    </div>
+
+    <div class="btn-group btn-group-sm" role="group">
+        <a asp-action="Index" asp-route-period="this_month" 
+           class="btn btn-outline-secondary @(Model.SelectedPeriod == "this_month" ? "active" : "")">
+            Этот месяц
+        </a>
+        <a asp-action="Index" asp-route-period="last_month" 
+           class="btn btn-outline-secondary @(Model.SelectedPeriod == "last_month" ? "active" : "")">
+            Прошлый месяц
+        </a>
+        <a asp-action="Index" asp-route-period="last_3_months" 
+           class="btn btn-outline-secondary @(Model.SelectedPeriod == "last_3_months" ? "active" : "")">
+            3 месяца
+        </a>
+        <a asp-action="Index" asp-route-period="this_year" 
+           class="btn btn-outline-secondary @(Model.SelectedPeriod == "this_year" ? "active" : "")">
+            Этот год
+        </a>
+        <a asp-action="Index" asp-route-period="all_time" 
+           class="btn btn-outline-secondary @(Model.SelectedPeriod == "all_time" ? "active" : "")">
+            Все время
+        </a>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card shadow-sm stat-card stat-income h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted small fw-semibold text-uppercase">Доходы</span>
+                    <i class="bi bi-arrow-up-circle fs-4 text-success"></i>
+                </div>
+                <h3 class="fw-bold text-success mb-1">+@Model.TotalIncome.ToString("N2") @Model.CurrencySymbol</h3>
+                <div class="text-muted small">Поступления за период</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm stat-card stat-expense h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted small fw-semibold text-uppercase">Расходы</span>
+                    <i class="bi bi-arrow-down-circle fs-4 text-danger"></i>
+                </div>
+                <h3 class="fw-bold text-danger mb-1">-@Model.TotalExpense.ToString("N2") @Model.CurrencySymbol</h3>
+                <div class="text-muted small">Сумма всех трат</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm stat-card stat-balance h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted small fw-semibold text-uppercase">Текущий баланс</span>
+                    <i class="bi bi-wallet2 fs-4 text-primary"></i>
+                </div>
+                <h3 class="fw-bold @(Model.NetBalance >= 0 ? "text-primary" : "text-danger") mb-1">
+                    @(Model.NetBalance >= 0 ? "+" : "")@Model.NetBalance.ToString("N2") @Model.CurrencySymbol
+                </h3>
+                <div class="text-muted small">
+                    @(Model.NetBalance >= 0 ? "Остаток в плюсе" : "Превышение расходов")
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-lg-7">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-transparent py-3 d-flex justify-content-between align-items-center">
+                <span class="fw-semibold"><i class="bi bi-bar-chart-line text-primary me-2"></i>Доходы и расходы за полгода</span>
+                <span class="text-muted small">Динамика</span>
+            </div>
+            <div class="card-body">
+                <canvas id="dynamicsChart" height="160"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-transparent py-3 d-flex justify-content-between align-items-center">
+                <span class="fw-semibold"><i class="bi bi-pie-chart text-danger me-2"></i>Расходы по категориям</span>
+                <span class="badge text-bg-secondary">@Model.CategoryExpenses.Count кат.</span>
+            </div>
+            <div class="card-body">
+                @if (Model.CategoryExpenses.Any())
+                {
+                    <div style="max-height: 250px; position: relative;">
+                        <canvas id="expensesChart"></canvas>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5 text-muted">
+                        <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+                        Нет расходов за выбранный период
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-7">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-transparent py-3 d-flex justify-content-between align-items-center">
+                <span class="fw-semibold"><i class="bi bi-clock-history text-primary me-2"></i>Последние операции</span>
+                <a asp-controller="Transactions" asp-action="Index" class="btn btn-sm btn-outline-primary">
+                    Все операции
+                </a>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Категория</th>
+                            <th>Дата</th>
+                            <th>Примечание</th>
+                            <th class="text-end">Сумма</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.RecentTransactions.Any())
+                        {
+                            @foreach (var item in Model.RecentTransactions)
+                            {
+                                var isIncome = item.Category?.Type == TransactionType.Income;
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <span class="rounded-circle d-inline-flex align-items-center justify-content-center text-white me-2" 
+                                                  style="width: 30px; height: 30px; background-color: @(item.Category?.ColorHex ?? "#6c757d"); font-size: 0.85rem;">
+                                                <i class="bi @(item.Category?.Icon ?? "bi-tag")"></i>
+                                            </span>
+                                            <span>@(item.Category?.Name ?? "Категория")</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-muted small">@item.Date.ToString("dd.MM.yyyy")</td>
+                                    <td class="text-muted small text-truncate" style="max-width: 170px;">
+                                        @(string.IsNullOrEmpty(item.Note) ? "—" : item.Note)
+                                    </td>
+                                    <td class="text-end fw-bold @(isIncome ? "text-success" : "text-danger")">
+                                        @(isIncome ? "+" : "-")@item.Amount.ToString("N2") @Model.CurrencySymbol
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4" class="text-center py-4 text-muted">
+                                    Операций пока нет.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-transparent py-3 d-flex justify-content-between align-items-center">
+                <span class="fw-semibold"><i class="bi bi-bullseye text-warning me-2"></i>Бюджет на этот месяц</span>
+                <a asp-controller="Budgets" asp-action="Index" class="btn btn-sm btn-outline-secondary">
+                    Настроить
+                </a>
+            </div>
+            <div class="card-body">
+                @if (Model.BudgetProgresses.Any())
+                {
+                    <div class="d-flex flex-column gap-3">
+                        @foreach (var b in Model.BudgetProgresses)
+                        {
+                            var progressClass = b.Percentage >= 100 ? "bg-danger" : (b.Percentage >= 80 ? "bg-warning" : "bg-success");
+                            <div>
+                                <div class="d-flex justify-content-between align-items-center mb-1 small">
+                                    <span class="fw-semibold">
+                                        <i class="bi @b.Icon me-1" style="color: @b.ColorHex;"></i> @b.CategoryName
+                                    </span>
+                                    <span class="@(b.IsOverBudget ? "text-danger fw-bold" : "text-muted")">
+                                        @b.Spent.ToString("N0") / @b.Limit.ToString("N0") @Model.CurrencySymbol (@b.Percentage%)
+                                    </span>
+                                </div>
+                                <div class="progress" style="height: 6px;">
+                                    <div class="progress-bar @progressClass" role="progressbar" 
+                                         style="width: @Math.Min(b.Percentage, 100)%;" 
+                                         aria-valuenow="@b.Percentage" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-4 text-muted">
+                        <i class="bi bi-calendar-check fs-2 d-block mb-2"></i>
+                        Бюджеты на этот месяц не заданы.
+                        <div class="mt-2">
+                            <a asp-controller="Budgets" asp-action="Create" class="btn btn-sm btn-outline-primary">
+                                Добавить лимит
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const dynamicsCtx = document.getElementById('dynamicsChart');
+            if (dynamicsCtx) {
+                new Chart(dynamicsCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MonthlyLabels)),
+                        datasets: [
+                            {
+                                label: 'Доходы',
+                                data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MonthlyIncomes)),
+                                backgroundColor: '#198754'
+                            },
+                            {
+                                label: 'Расходы',
+                                data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MonthlyExpenses)),
+                                backgroundColor: '#dc3545'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: { position: 'top' }
+                        },
+                        scales: {
+                            y: { beginAtZero: true }
+                        }
+                    }
+                });
+            }
+
+            const expCtx = document.getElementById('expensesChart');
+            if (expCtx) {
+                const categoryNames = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.CategoryExpenses.Select(c => c.CategoryName)));
+                const categoryAmounts = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.CategoryExpenses.Select(c => c.Amount)));
+                const categoryColors = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.CategoryExpenses.Select(c => c.ColorHex)));
+
+                new Chart(expCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: categoryNames,
+                        datasets: [{
+                            data: categoryAmounts,
+                            backgroundColor: categoryColors
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'right' }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+}
