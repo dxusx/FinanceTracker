@@ -34,11 +34,13 @@ public class BudgetsController : Controller
             .Where(b => b.UserId == userId && b.Month == selectedMonth && b.Year == selectedYear)
             .ToListAsync();
 
-        var expenses = await _context.Transactions
+        var monthTransactions = await _context.Transactions
             .Where(t => t.UserId == userId && t.Date.Month == selectedMonth && t.Date.Year == selectedYear)
+            .ToListAsync();
+
+        var expenses = monthTransactions
             .GroupBy(t => t.CategoryId)
-            .Select(g => new { CategoryId = g.Key, Spent = g.Sum(x => x.Amount) })
-            .ToDictionaryAsync(x => x.CategoryId, x => x.Spent);
+            .ToDictionary(g => g.Key, g => g.Sum(x => x.Amount));
 
         var budgetProgressList = budgets.Select(b =>
         {

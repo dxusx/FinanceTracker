@@ -156,11 +156,13 @@ public class DashboardController : Controller
             .Where(b => b.UserId == userId && b.Month == now.Month && b.Year == now.Year)
             .ToListAsync();
 
-        var currentMonthExpenses = await _context.Transactions
+        var thisMonthTransactions = await _context.Transactions
             .Where(t => t.UserId == userId && t.Date.Month == now.Month && t.Date.Year == now.Year)
+            .ToListAsync();
+
+        var currentMonthExpenses = thisMonthTransactions
             .GroupBy(t => t.CategoryId)
-            .Select(g => new { CategoryId = g.Key, Spent = g.Sum(x => x.Amount) })
-            .ToDictionaryAsync(x => x.CategoryId, x => x.Spent);
+            .ToDictionary(g => g.Key, g => g.Sum(x => x.Amount));
 
         var budgetProgresses = currentMonthBudgets.Select(b =>
         {
