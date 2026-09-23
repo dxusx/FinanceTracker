@@ -5,7 +5,7 @@
 Выполнил: Карим
 
 ## Стек технологий
-- **Backend:** ASP.NET Core 10 (MVC), C#
+- **Backend:** ASP.NET Core 8 (MVC), C#
 - **База данных:** Entity Framework Core, SQLite
 - **Безопасность:** ASP.NET Core Identity (регистрация, аутентификация, хеширование паролей)
 - **Frontend:** Bootstrap 5, Bootstrap Icons, Chart.js
