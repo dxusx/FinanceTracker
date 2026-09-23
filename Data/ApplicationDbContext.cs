@@ -64,22 +64,19 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         });
 
         builder.Entity<Category>().HasData(
-            new Category { Id = 1, Name = "Зарплата", Type = TransactionType.Income, Icon = "bi-cash-coin", ColorHex = "#198754", UserId = null },
-            new Category { Id = 2, Name = "Фриланс и подработка", Type = TransactionType.Income, Icon = "bi-laptop", ColorHex = "#20c997", UserId = null },
-            new Category { Id = 3, Name = "Инвестиции и проценты", Type = TransactionType.Income, Icon = "bi-graph-up-arrow", ColorHex = "#0dcaf0", UserId = null },
-            new Category { Id = 4, Name = "Подарки и бонусы", Type = TransactionType.Income, Icon = "bi-gift", ColorHex = "#ffc107", UserId = null },
-            new Category { Id = 5, Name = "Прочие доходы", Type = TransactionType.Income, Icon = "bi-piggy-bank", ColorHex = "#6c757d", UserId = null },
+            new Category { Id = 1, Name = "Зарплата / Стипендия", Type = TransactionType.Income, Icon = "bi-cash-coin", ColorHex = "#198754", UserId = null },
+            new Category { Id = 2, Name = "Подработка", Type = TransactionType.Income, Icon = "bi-laptop", ColorHex = "#20c997", UserId = null },
+            new Category { Id = 3, Name = "Переводы от родителей", Type = TransactionType.Income, Icon = "bi-wallet2", ColorHex = "#0dcaf0", UserId = null },
+            new Category { Id = 4, Name = "Прочие доходы", Type = TransactionType.Income, Icon = "bi-piggy-bank", ColorHex = "#6c757d", UserId = null },
 
-            new Category { Id = 10, Name = "Продукты и супермаркеты", Type = TransactionType.Expense, Icon = "bi-cart3", ColorHex = "#dc3545", UserId = null },
-            new Category { Id = 11, Name = "Кафе и рестораны", Type = TransactionType.Expense, Icon = "bi-cup-hot", ColorHex = "#fd7e14", UserId = null },
-            new Category { Id = 12, Name = "Жилье и ЖКХ", Type = TransactionType.Expense, Icon = "bi-house-door", ColorHex = "#6f42c1", UserId = null },
-            new Category { Id = 13, Name = "Транспорт и бензин", Type = TransactionType.Expense, Icon = "bi-car-front", ColorHex = "#d63384", UserId = null },
-            new Category { Id = 14, Name = "Развлечения и отдых", Type = TransactionType.Expense, Icon = "bi-controller", ColorHex = "#0d6efd", UserId = null },
-            new Category { Id = 15, Name = "Здоровье и аптеки", Type = TransactionType.Expense, Icon = "bi-heart-pulse", ColorHex = "#e83e8c", UserId = null },
-            new Category { Id = 16, Name = "Одежда и покупки", Type = TransactionType.Expense, Icon = "bi-bag", ColorHex = "#6610f2", UserId = null },
-            new Category { Id = 17, Name = "Связь и интернет", Type = TransactionType.Expense, Icon = "bi-wifi", ColorHex = "#055160", UserId = null },
-            new Category { Id = 18, Name = "Образование и книги", Type = TransactionType.Expense, Icon = "bi-book", ColorHex = "#0f5132", UserId = null },
-            new Category { Id = 19, Name = "Прочие расходы", Type = TransactionType.Expense, Icon = "bi-tags", ColorHex = "#495057", UserId = null }
+            new Category { Id = 10, Name = "Супермаркеты", Type = TransactionType.Expense, Icon = "bi-cart3", ColorHex = "#dc3545", UserId = null },
+            new Category { Id = 11, Name = "Обеды / Кафе", Type = TransactionType.Expense, Icon = "bi-cup-hot", ColorHex = "#fd7e14", UserId = null },
+            new Category { Id = 12, Name = "Транспорт", Type = TransactionType.Expense, Icon = "bi-car-front", ColorHex = "#6f42c1", UserId = null },
+            new Category { Id = 13, Name = "Подписки", Type = TransactionType.Expense, Icon = "bi-music-note", ColorHex = "#0d6efd", UserId = null },
+            new Category { Id = 14, Name = "Жилье и связь", Type = TransactionType.Expense, Icon = "bi-house-door", ColorHex = "#055160", UserId = null },
+            new Category { Id = 15, Name = "Учеба и книги", Type = TransactionType.Expense, Icon = "bi-book", ColorHex = "#0f5132", UserId = null },
+            new Category { Id = 16, Name = "Развлечения", Type = TransactionType.Expense, Icon = "bi-controller", ColorHex = "#e83e8c", UserId = null },
+            new Category { Id = 17, Name = "Прочее", Type = TransactionType.Expense, Icon = "bi-tags", ColorHex = "#495057", UserId = null }
         );
     }
 }

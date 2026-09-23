@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FinanceTracker.Data;
+using FinanceTracker.Models;
 using FinanceTracker.Models.Enums;
 using FinanceTracker.ViewModels;
 
@@ -68,15 +69,23 @@ public class DashboardController : Controller
             transactionsQuery = transactionsQuery.Where(t => t.Date >= startDate && t.Date <= endDate);
         }
 
-        var periodTransactions = await transactionsQuery.ToListAsync();
+        List<Transaction> periodTransactions = await transactionsQuery.ToListAsync();
 
-        var totalIncome = periodTransactions
-            .Where(t => t.Category?.Type == TransactionType.Income)
-            .Sum(t => t.Amount);
+        decimal totalIncome = 0;
+        // Считаем общую сумму расходов за выбранный месяц
+        decimal totalExpense = 0;
 
-        var totalExpense = periodTransactions
-            .Where(t => t.Category?.Type == TransactionType.Expense)
-            .Sum(t => t.Amount);
+        foreach (var item in periodTransactions)
+        {
+            if (item.Category?.Type == TransactionType.Income)
+            {
+                totalIncome += item.Amount;
+            }
+            else if (item.Category?.Type == TransactionType.Expense)
+            {
+                totalExpense += item.Amount;
+            }
+        }
 
         var categoryExpenses = periodTransactions
             .Where(t => t.Category?.Type == TransactionType.Expense && t.Category != null)
@@ -106,7 +115,8 @@ public class DashboardController : Controller
             .OrderByDescending(x => x.Amount)
             .ToList();
 
-        var recentTransactions = await _context.Transactions
+        // TODO: добавить пагинацию, если записей будет больше сотни
+        List<Transaction> recentTransactions = await _context.Transactions
             .Include(t => t.Category)
             .Where(t => t.UserId == userId)
             .OrderByDescending(t => t.Date)

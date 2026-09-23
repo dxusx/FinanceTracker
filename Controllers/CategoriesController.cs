@@ -24,7 +24,8 @@ public class CategoriesController : Controller
     public async Task<IActionResult> Index()
     {
         var userId = CurrentUserId;
-        var categories = await _context.Categories
+        // подгружаем категории пользователя и общие дефолтные
+        List<Category> categories = await _context.Categories
             .Where(c => c.UserId == null || c.UserId == userId)
             .Include(c => c.Transactions.Where(t => t.UserId == userId))
             .OrderBy(c => c.Type)

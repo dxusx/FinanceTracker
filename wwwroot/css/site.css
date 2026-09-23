@@ -1,5 +1,7 @@
 html {
   font-size: 14px;
+  position: relative;
+  min-height: 100%;
 }
 
 @media (min-width: 768px) {
@@ -8,24 +10,123 @@ html {
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
 body {
-  margin-bottom: 60px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+.footer {
+  margin-top: auto;
+  border-top: 1px solid var(--bs-border-color);
+  padding: 1rem 0;
+  font-size: 0.9rem;
+}
+
+/* 1. Карточки статистики на главной */
+.stat-card-custom {
+  border-radius: 12px;
+  transition: transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  border: 1px solid var(--bs-border-color);
+}
+.stat-card-custom:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.stat-income {
+  border-left: 5px solid #198754 !important;
+}
+
+.stat-expense {
+  border-left: 5px solid #dc3545 !important;
+}
+
+.stat-balance {
+  border-left: 5px solid #0d6efd !important;
+}
+
+/* 2. Подсветка сумм операций */
+.amount-income {
+  color: #198754;
+  font-weight: 600;
+}
+
+.amount-expense {
+  color: #dc3545;
+  font-weight: 600;
+}
+
+/* 3. Скругленная аккуратная таблица */
+.table-rounded {
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--bs-border-color);
+}
+.table-rounded th {
+  background-color: var(--bs-tertiary-bg);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.table-rounded td {
+  vertical-align: middle;
+}
+
+/* 4. Бейджи для категорий */
+.category-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35em 0.65em;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border-radius: 6px;
+}
+
+/* 5. Карточки графиков */
+.chart-box {
+  background-color: var(--bs-body-bg);
+  border: 1px solid var(--bs-border-color);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+/* 6. Полосы прогресса для бюджетов */
+.budget-bar {
+  height: 10px;
+  border-radius: 5px;
+  background-color: var(--bs-secondary-bg);
+}
+
+/* 7. Заметки к транзакциям */
+.transaction-note {
+  font-size: 0.9rem;
   color: var(--bs-secondary-color);
-  text-align: end;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+/* 8. Кнопки быстрых действий */
+.quick-action-btn {
+  border-radius: 8px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* 9. Панель фильтров */
+.filter-panel {
+  background-color: var(--bs-tertiary-bg);
+  border-radius: 10px;
+  padding: 1rem;
+  border: 1px solid var(--bs-border-color);
+}
+
+/* 10. Кнопки действий в строках таблиц */
+.table-action-btn {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+  border-radius: 6px;
 }

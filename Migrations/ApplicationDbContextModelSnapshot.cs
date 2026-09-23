@@ -167,7 +167,7 @@ namespace FinanceTracker.Migrations
                             Id = 1,
                             ColorHex = "#198754",
                             Icon = "bi-cash-coin",
-                            Name = "Зарплата",
+                            Name = "Зарплата / Стипендия",
                             Type = 1
                         },
                         new
@@ -175,28 +175,20 @@ namespace FinanceTracker.Migrations
                             Id = 2,
                             ColorHex = "#20c997",
                             Icon = "bi-laptop",
-                            Name = "Фриланс и подработка",
+                            Name = "Подработка",
                             Type = 1
                         },
                         new
                         {
                             Id = 3,
                             ColorHex = "#0dcaf0",
-                            Icon = "bi-graph-up-arrow",
-                            Name = "Инвестиции и проценты",
+                            Icon = "bi-wallet2",
+                            Name = "Переводы от родителей",
                             Type = 1
                         },
                         new
                         {
                             Id = 4,
-                            ColorHex = "#ffc107",
-                            Icon = "bi-gift",
-                            Name = "Подарки и бонусы",
-                            Type = 1
-                        },
-                        new
-                        {
-                            Id = 5,
                             ColorHex = "#6c757d",
                             Icon = "bi-piggy-bank",
                             Name = "Прочие доходы",
@@ -207,7 +199,7 @@ namespace FinanceTracker.Migrations
                             Id = 10,
                             ColorHex = "#dc3545",
                             Icon = "bi-cart3",
-                            Name = "Продукты и супермаркеты",
+                            Name = "Супермаркеты",
                             Type = 2
                         },
                         new
@@ -215,71 +207,55 @@ namespace FinanceTracker.Migrations
                             Id = 11,
                             ColorHex = "#fd7e14",
                             Icon = "bi-cup-hot",
-                            Name = "Кафе и рестораны",
+                            Name = "Обеды / Кафе",
                             Type = 2
                         },
                         new
                         {
                             Id = 12,
                             ColorHex = "#6f42c1",
-                            Icon = "bi-house-door",
-                            Name = "Жилье и ЖКХ",
+                            Icon = "bi-car-front",
+                            Name = "Транспорт",
                             Type = 2
                         },
                         new
                         {
                             Id = 13,
-                            ColorHex = "#d63384",
-                            Icon = "bi-car-front",
-                            Name = "Транспорт и бензин",
+                            ColorHex = "#0d6efd",
+                            Icon = "bi-music-note",
+                            Name = "Подписки",
                             Type = 2
                         },
                         new
                         {
                             Id = 14,
-                            ColorHex = "#0d6efd",
-                            Icon = "bi-controller",
-                            Name = "Развлечения и отдых",
+                            ColorHex = "#055160",
+                            Icon = "bi-house-door",
+                            Name = "Жилье и связь",
                             Type = 2
                         },
                         new
                         {
                             Id = 15,
-                            ColorHex = "#e83e8c",
-                            Icon = "bi-heart-pulse",
-                            Name = "Здоровье и аптеки",
+                            ColorHex = "#0f5132",
+                            Icon = "bi-book",
+                            Name = "Учеба и книги",
                             Type = 2
                         },
                         new
                         {
                             Id = 16,
-                            ColorHex = "#6610f2",
-                            Icon = "bi-bag",
-                            Name = "Одежда и покупки",
+                            ColorHex = "#e83e8c",
+                            Icon = "bi-controller",
+                            Name = "Развлечения",
                             Type = 2
                         },
                         new
                         {
                             Id = 17,
-                            ColorHex = "#055160",
-                            Icon = "bi-wifi",
-                            Name = "Связь и интернет",
-                            Type = 2
-                        },
-                        new
-                        {
-                            Id = 18,
-                            ColorHex = "#0f5132",
-                            Icon = "bi-book",
-                            Name = "Образование и книги",
-                            Type = 2
-                        },
-                        new
-                        {
-                            Id = 19,
                             ColorHex = "#495057",
                             Icon = "bi-tags",
-                            Name = "Прочие расходы",
+                            Name = "Прочее",
                             Type = 2
                         });
                 });

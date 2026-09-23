@@ -39,6 +39,9 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     db.Database.Migrate();
+
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+    DbDataSeed.SeedAsync(db, userManager).GetAwaiter().GetResult();
 }
 
 if (!app.Environment.IsDevelopment())

@@ -44,7 +44,9 @@ public class TransactionsController : Controller
 
         if (endDate.HasValue)
         {
-            query = query.Where(t => t.Date <= endDate.Value.Date.AddDays(1).AddTicks(-1));
+            // Временный фикс для часового пояса
+            var endOfDay = endDate.Value.Date.AddDays(1).AddTicks(-1);
+            query = query.Where(t => t.Date <= endOfDay);
         }
 
         if (categoryId.HasValue && categoryId.Value > 0)
@@ -64,19 +66,19 @@ public class TransactionsController : Controller
                                   || (t.Category != null && t.Category.Name.ToLower().Contains(search)));
         }
 
-        var allFiltered = await query.ToListAsync();
-        var filteredIncome = allFiltered.Where(t => t.Category?.Type == TransactionType.Income).Sum(t => t.Amount);
-        var filteredExpense = allFiltered.Where(t => t.Category?.Type == TransactionType.Expense).Sum(t => t.Amount);
-        var totalItems = allFiltered.Count;
+        List<Transaction> allFiltered = await query.ToListAsync();
+        decimal filteredIncome = allFiltered.Where(t => t.Category?.Type == TransactionType.Income).Sum(t => t.Amount);
+        decimal filteredExpense = allFiltered.Where(t => t.Category?.Type == TransactionType.Expense).Sum(t => t.Amount);
+        int totalItems = allFiltered.Count;
 
-        var transactions = allFiltered
+        List<Transaction> transactions = allFiltered
             .OrderByDescending(t => t.Date)
             .ThenByDescending(t => t.Id)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToList();
 
-        var userCategories = await _context.Categories
+        List<SelectListItem> userCategories = await _context.Categories
             .Where(c => c.UserId == null || c.UserId == userId)
             .OrderBy(c => c.Type)
             .ThenBy(c => c.Name)
@@ -130,6 +132,12 @@ public class TransactionsController : Controller
         if (category == null)
         {
             ModelState.AddModelError(nameof(model.CategoryId), "Выбранная категория не найдена.");
+        }
+
+        // Проверяем, чтобы расход не ушел в минус
+        if (model.Amount <= 0)
+        {
+            ModelState.AddModelError(nameof(model.Amount), "Сумма должна быть больше нуля");
         }
 
         if (!ModelState.IsValid)

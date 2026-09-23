@@ -247,21 +247,18 @@ namespace FinanceTracker.Migrations
                 columns: new[] { "Id", "ColorHex", "Icon", "Name", "Type", "UserId" },
                 values: new object[,]
                 {
-                    { 1, "#198754", "bi-cash-coin", "Зарплата", 1, null },
-                    { 2, "#20c997", "bi-laptop", "Фриланс и подработка", 1, null },
-                    { 3, "#0dcaf0", "bi-graph-up-arrow", "Инвестиции и проценты", 1, null },
-                    { 4, "#ffc107", "bi-gift", "Подарки и бонусы", 1, null },
-                    { 5, "#6c757d", "bi-piggy-bank", "Прочие доходы", 1, null },
-                    { 10, "#dc3545", "bi-cart3", "Продукты и супермаркеты", 2, null },
-                    { 11, "#fd7e14", "bi-cup-hot", "Кафе и рестораны", 2, null },
-                    { 12, "#6f42c1", "bi-house-door", "Жилье и ЖКХ", 2, null },
-                    { 13, "#d63384", "bi-car-front", "Транспорт и бензин", 2, null },
-                    { 14, "#0d6efd", "bi-controller", "Развлечения и отдых", 2, null },
-                    { 15, "#e83e8c", "bi-heart-pulse", "Здоровье и аптеки", 2, null },
-                    { 16, "#6610f2", "bi-bag", "Одежда и покупки", 2, null },
-                    { 17, "#055160", "bi-wifi", "Связь и интернет", 2, null },
-                    { 18, "#0f5132", "bi-book", "Образование и книги", 2, null },
-                    { 19, "#495057", "bi-tags", "Прочие расходы", 2, null }
+                    { 1, "#198754", "bi-cash-coin", "Зарплата / Стипендия", 1, null },
+                    { 2, "#20c997", "bi-laptop", "Подработка", 1, null },
+                    { 3, "#0dcaf0", "bi-wallet2", "Переводы от родителей", 1, null },
+                    { 4, "#6c757d", "bi-piggy-bank", "Прочие доходы", 1, null },
+                    { 10, "#dc3545", "bi-cart3", "Супермаркеты", 2, null },
+                    { 11, "#fd7e14", "bi-cup-hot", "Обеды / Кафе", 2, null },
+                    { 12, "#6f42c1", "bi-car-front", "Транспорт", 2, null },
+                    { 13, "#0d6efd", "bi-music-note", "Подписки", 2, null },
+                    { 14, "#055160", "bi-house-door", "Жилье и связь", 2, null },
+                    { 15, "#0f5132", "bi-book", "Учеба и книги", 2, null },
+                    { 16, "#e83e8c", "bi-controller", "Развлечения", 2, null },
+                    { 17, "#495057", "bi-tags", "Прочее", 2, null }
                 });
 
             migrationBuilder.CreateIndex(

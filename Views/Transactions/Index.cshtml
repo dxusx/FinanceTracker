@@ -17,7 +17,8 @@
     </div>
 </div>
 
-<div class="card shadow-sm mb-4">
+<!-- Форма фильтрации операций -->
+<div class="card shadow-sm mb-4 filter-panel">
     <div class="card-body">
         <form method="get" asp-action="Index" class="row g-3 align-items-end">
             <div class="col-md-3 col-sm-6">
@@ -59,17 +60,18 @@
     </div>
 </div>
 
+<!-- Сводка по выбранным фильтрам -->
 <div class="row g-3 mb-3">
     <div class="col-md-4">
         <div class="p-3 bg-body-tertiary border rounded shadow-sm d-flex justify-content-between align-items-center">
             <span class="text-muted small">Доходы:</span>
-            <span class="fw-bold text-success">+@Model.FilteredIncome.ToString("N2") @Model.CurrencySymbol</span>
+            <span class="fw-bold amount-income">+@Model.FilteredIncome.ToString("N2") @Model.CurrencySymbol</span>
         </div>
     </div>
     <div class="col-md-4">
         <div class="p-3 bg-body-tertiary border rounded shadow-sm d-flex justify-content-between align-items-center">
             <span class="text-muted small">Расходы:</span>
-            <span class="fw-bold text-danger">-@Model.FilteredExpense.ToString("N2") @Model.CurrencySymbol</span>
+            <span class="fw-bold amount-expense">-@Model.FilteredExpense.ToString("N2") @Model.CurrencySymbol</span>
         </div>
     </div>
     <div class="col-md-4">
@@ -82,7 +84,8 @@
     </div>
 </div>
 
-<div class="card shadow-sm">
+<!-- Таблица транзакций -->
+<div class="card shadow-sm table-rounded">
     <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
             <thead>
